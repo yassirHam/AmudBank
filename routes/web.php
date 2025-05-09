@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\SuperAdminLoginController;
 use App\Http\Controllers\MiniAdminLoginController;
 use App\Http\Controllers\SuperAdminController;
@@ -9,6 +10,8 @@ use App\Models\MiniAdmin;
 use App\Models\ActivityLog;
 
 
+=======
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
 use App\Http\Controllers\AdminController;
 use App\Mail\ProfileMail;
 
@@ -31,6 +34,7 @@ Route::PATCH('/changeProfile',[AdminController::class,'changeProfile'])->name('c
 // Logout
 Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
+<<<<<<< HEAD
 Route::post('/comptes/creer',[AdminController::class,'createNewBankAccount'])->name('createNewBankAccount')->middleware('auth');
 // SuperAdmin Routes
 Route::prefix('super-admin')->name('super-admin.')->group(function () {
@@ -83,3 +87,6 @@ Route::prefix('mini-admin')->name('mini-admin.')->group(function () {
         })->name('logout');
     });
 });
+=======
+Route::post('/comptes/creer',[AdminController::class,'createNewBankAccount'])->name('createNewBankAccount')->middleware('auth');
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e

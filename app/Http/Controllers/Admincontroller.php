@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ProfileMail;
 use Illuminate\Support\Facades\Session;
 use App\Models\Compte;
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Model;
+=======
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
 
 class AdminController extends Controller
 {
@@ -122,10 +125,14 @@ class AdminController extends Controller
         ]);
     }
     public function createNewBankAccount(Request $request){
+<<<<<<< HEAD
         $user = User::find(Auth::id());
         if (!$user) {
             return back()->withErrors(['user' => 'User not found.']);
         }
+=======
+        $user = Auth::user();
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
         $compte=Compte::create([
             'user_id' => $user->id,
             'type_compte' => $request->type_compte,
@@ -257,9 +264,12 @@ protected function createCard(Compte $compte)
             'new_password_confirmation' => 'nullable|string|min:8',
         ]);
         $user = Auth::user();
+<<<<<<< HEAD
         if (!$user instanceof User) {
             return back()->withErrors(['user' => 'Authenticated user is not valid.']);
         }
+=======
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
         if(!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Le mot de passe actuel est incorrect.'

@@ -3,6 +3,7 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
+<<<<<<< HEAD
     "keywords": [
         "laravel",
         "framework"
@@ -12,6 +13,18 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
+=======
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "intervention/image": "^3.11",
+        "irazasyed/telegram-bot-sdk": "^3.15",
+        "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.10.1",
+        "thiagoalessio/tesseract_ocr": "^2.13"
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -52,7 +65,11 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
+<<<<<<< HEAD
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'"
+=======
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
         ],
         "test": [
             "@php artisan config:clear --ansi",
@@ -75,4 +92,8 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e

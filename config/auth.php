@@ -36,6 +36,7 @@ return [
     */
 
     'guards' => [
+<<<<<<< HEAD
 
     'web' => [
             'driver' => 'session',
@@ -50,6 +51,13 @@ return [
         'provider' => 'mini_admins',
     ],
 ],
+=======
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+    ],
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
 
     /*
     |--------------------------------------------------------------------------
@@ -71,6 +79,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
+<<<<<<< HEAD
             'model' => App\Models\User::class,
         ],
     'super_admin' => [
@@ -83,6 +92,17 @@ return [
     ],
     ],
  
+=======
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

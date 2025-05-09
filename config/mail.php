@@ -1,6 +1,7 @@
 <?php
 
 return [
+<<<<<<< HEAD
 
     /*
     |--------------------------------------------------------------------------
@@ -46,6 +47,20 @@ return [
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
+=======
+    'default' => env('MAIL_MAILER', 'smtp'),
+
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'sandbox.smtp.mailtrap.io'),
+            'port' => env('MAIL_PORT', 2525),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'auth_mode' => null,
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
@@ -96,6 +111,7 @@ return [
             ],
             'retry_after' => 60,
         ],
+<<<<<<< HEAD
 
     ],
 
@@ -110,9 +126,17 @@ return [
     |
     */
 
+=======
+    ],
+
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
+<<<<<<< HEAD
 
 ];
+=======
+];
+>>>>>>> cc89429808b39ce16bc0351bda686962c624473e
