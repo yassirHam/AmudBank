@@ -2,47 +2,41 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable; // Add this line
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Authenticatable // Extend the Authenticatable class
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use Notifiable; // Include the Notifiable trait for notifications
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'name',
+        'Nom', 
+        'Prenom',
+        'Cin',
+        'Role',
         'email',
+        'telephone',
         'password',
+        'rip',
+        'cin_image',
+        'email_verified_at',
+        'birthday',
+        'adresse',
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public static function generateRib()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        $rib = '288';
+        for ($i = 0; $i < 21; $i++) {
+            $rib .= mt_rand(0, 9);
+        }
+        return $rib;
     }
+    public function comptes()
+{
+    return $this->hasMany(Compte::class);
+}
 }
