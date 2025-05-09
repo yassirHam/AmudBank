@@ -1,0 +1,10 @@
+*{
+    margin:0;
+    padding:0;
+}
+.login-container{
+    text-align: center;
+    background-color: aqua;
+    height: 600px;
+    width: 300px;
+}
