@@ -4,21 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Carte;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ProfileMail;
+use App\Mail\CodePin;
 use Illuminate\Support\Facades\Session;
 use App\Models\Compte;
-use Illuminate\Database\Eloquent\Model;
 
 class AdminController extends Controller
 {
     public function showinglogin()
     {
         return view('login');
+    }
+    public function showregister()
+    {
+        return view('register');
     }
 
     public function showRegistration(Request $request)
@@ -95,10 +98,14 @@ class AdminController extends Controller
     
         if (!$nomFound || !$prenomFound || !$cinFound) {
             unlink($path);
-            return response()->json([
-                'success' => false,
-                'errors' => ['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte']
-            ], 422);
+
+            // return response()->json([
+            //     'success' => false,
+            //     // 'text' => $text,
+            //     'errors' => ['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte']
+            // ], 422);
+        return redirect()->back()->withErrors(['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte.']);
+
         }
 
         $user = User::create([
@@ -109,7 +116,6 @@ class AdminController extends Controller
             "email" =>$request->email,
             "telephone" => $request->telephone,
             "password" => Hash::make($request->password),
-            'rip' => User::generateRib(),
             'cin_image' => $imageName,
             'adresse' =>$request->adresse,
             'birthday' =>$request->birthday,
@@ -122,54 +128,58 @@ class AdminController extends Controller
         ]);
     }
     public function createNewBankAccount(Request $request){
-        $user = User::find(Auth::id());
-        if (!$user) {
-            return back()->withErrors(['user' => 'User not found.']);
+        $user = Auth::user();
+        $typeCarte = in_array($request->type_compte, ['courant', 'epargne']) ? 'mastercard' : 'visa';
+        if ($request->type_compte == 'courant') {
+            $plafond = 5000.00;
+        } elseif ($request->type_compte == 'epargne') {
+            $plafond = 1000.00;
+        } else {
+            $plafond = 10000.00;
         }
         $compte=Compte::create([
             'user_id' => $user->id,
             'type_compte' => $request->type_compte,
             'solde' => 0,
             'statut' => 'actif',
-            'date_ouverture' => now(),
-        ]);
-        $this->createCard($compte);
-        return redirect()->route('client')->with('success', 'Compte bancaire créé avec succès.');
+            'numero_compte' => rand(1000000, 9999999),
+            'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
+            'type_carte' => $typeCarte,
+            'rip' => Compte::generateRib(),
+            'Code_guichet'=> Compte::CodeGuichet(),
+            'date_expiration' => now()->addYears(5)->format('m/y'),
+            'etat' => 'active',
+            'plafond_journalier' => $plafond,
+            'code_securite' => bcrypt(rand(1000, 9999)),
+            ]);
+
+        session(['compteAddionelle' => $request->type_compte]);
+
+        return redirect()->route('accounts')->with('success', 'Compte bancaire créé avec succès.');
     }
     protected function createBankAccount(User $user)
-{
+{   
     return Compte::create([
+
         'user_id' => $user->id,
         'type_compte' => 'courant', 
         'solde' => 0, 
         'statut' => 'actif',
-        'date_ouverture' => now(),
-    ]);
-}
-protected function createCard(Compte $compte)
-{
-    $typeCarte = in_array($compte->type_compte, ['courant', 'epargne']) ? 'mastercard' : 'visa';
-
-    if ($compte->type_compte == 'courant') {
-        $plafond = 5000.00;
-    } elseif ($compte->type_compte == 'epargne') {
-        $plafond = 1000.00;
-    } else {
-        $plafond = 10000.00;
-    }
-
-    return Carte::create([
-        'compte_id' => $compte->id,
         'numero_compte' => rand(1000000, 9999999),
-        'numero_carte' => rand(1000000000000000, 9999999999999999),
-        'type_carte' => $typeCarte,
-        'date_expiration' => now()->addYears(5)->endOfMonth()->format('Y-m-d'),
+        'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
+        'type_carte' => 'mastercard',
+        'rip' => Compte::generateRib(),
+        'Code_guichet'=> Compte::CodeGuichet(),
+        'date_expiration' => now()->addYears(5)->format('m/y'),
         'etat' => 'active',
-        'date_creation' => now(),
-        // 'plafond_journalier' => $plafond,
+        'plafond_journalier' => 5000.00,
         'code_securite' => bcrypt(rand(1000, 9999)),
     ]);
 }
+
+    
+
+
 
 
 
@@ -195,15 +205,17 @@ protected function createCard(Compte $compte)
         $user = User::where('email', $email)->first();
     
 
-        // Mark as verified
+        
         $user->update([
             'email_verified_at' => now(),
         ]);
         $compte=$this->createBankAccount($user);
-        $this->createCard($compte);
+        $code = rand(1000, 9999);
+        $carte = $compte->numero_carte;
+        Mail::to($user->email)->send(new CodePin($user, $code, $carte));
 
         Auth::login($user);
-    
+
         return redirect()->route('client')// ->with('success', 'Vérification réussie !') ;
     ;}
         
@@ -226,37 +238,35 @@ protected function createCard(Compte $compte)
 
 
     public function login(Request $request)
-{
-    // Validate CIN and password
-    $request->validate([
-        'Cin' => 'required|string|alpha_num',
-        'password' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'Cin' => 'required|string|alpha_num',
+            'password' => 'required|string',
+        ]);
 
-    // Try to log in
-    if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
-        $request->session()->regenerate();
-
-        $user = Auth::user();
-
-        // ✅ Check if account is frozen
-        if ($user->status === 'frozen') {
-            Auth::logout();
-            return back()->withErrors([
+        if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
+            $request->session()->regenerate();
+             $user = Auth::user();
+             if ($user->status === 'frozen') {
+             Auth::logout();
+             return back()->withErrors([
                 'Cin' => 'Your account is frozen. Contact support.',
             ])->onlyInput('Cin');
+        } 
+            return match (Auth::user()->Role) {
+                'client' => redirect()->route('client'),
+                'admin' => redirect()->route('admin'),
+                default => redirect()->route('main'),
+            };
         }
 
-        // ✅ Redirect all valid users to /client
-        return redirect()->route('client');
+        return back()->withErrors([
+            'Cin' => 'CIN ou mot de passe invalide.'
+        ])->onlyInput('Cin');
     }
 
-    // If login fails
-    return back()->withErrors([
-        'Cin' => 'Invalid CIN or password'
-    ])->onlyInput('Cin');
-}
     public function changeProfile(Request $request){
+        /** @var \App\Models\User $user */
         $request->validate([
             'telephone' => 'required|alpha_num',
             'adresse' => 'required|string|max:255',
@@ -265,10 +275,7 @@ protected function createCard(Compte $compte)
             'new_password' => 'nullable|string|confirmed|min:8',
             'new_password_confirmation' => 'nullable|string|min:8',
         ]);
-        $user = Auth::user();
-        if (!$user instanceof User) {
-            return back()->withErrors(['user' => 'Authenticated user is not valid.']);
-        }
+        $user = User::find(Auth::id());
         if(!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Le mot de passe actuel est incorrect.'
@@ -281,23 +288,9 @@ protected function createCard(Compte $compte)
             $user->password = Hash::make($request->new_password);
         }
         $user->save();
-
-        return redirect()->route('client')->with('success', 'Profile updated successfully.');
+        return redirect()->route('settings')->with('success', 'Profile updated successfully.');
         
     }
-    public function cartesBancaires(Request $request)
-    {
-        $user = Auth::user();
-        
-
-    }
-    public function compte($user)
-    {
-        
-
-
-    }
-
 
     public function logout(Request $request)
     {
