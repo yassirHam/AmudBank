@@ -12,11 +12,11 @@
                 <small>MiniAdmin Login</small>
             </div>
             <div class="card-body p-4">
-                <form method="POST" action="{{ route('mini-admin.login') }}">
+                <form method="POST" action="{{ route('mini-admin.login.submit') }}">
                     @csrf
                     <div class="mb-3">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <input type="email" name="email" class="form-control" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label>Password</label>
@@ -39,7 +39,6 @@
 <!-- Add Bootstrap Icons CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 @endpush
-
 @push('scripts')
 <script>
 document.getElementById('togglePassword').addEventListener('click', function () {

@@ -7,7 +7,7 @@
     <div class="login-container">
         <!-- Logo & Slogan -->
         <div class="text-center mb-4">
-            <img src="{{ asset('images\LOGO.png') }}" alt="AmudBank Logo" class="login-logo mb-3" width="100" height="100">
+            <img src="{{ asset('images\LOGO - Copy.png') }}" alt="AmudBank Logo" class="login-logo mb-3" width="100" height="100">
             <h1 class="login-title">AmudBank Admin Portal</h1>
             <p class="login-slogan">The Pillar of Your Wealth</p>
         </div>
@@ -23,6 +23,9 @@
                 <!-- Login Form -->
                 <form method="POST" action="{{ route('super-admin.login', ['secret' => $secret]) }}" class="needs-validation" novalidate>
                     @csrf
+                    <input type="text" name="fake_email" value="" style="display:none;" readonly>
+                    <input type="password" name="fake_password" value=" " style="display:none;" readonly>
+
                     <div class="mb-4">
                         <label for="email" class="form-label fw-medium">Email Address</label>
                         <div class="input-group input-group-lg">
@@ -30,13 +33,15 @@
                                 <i class="bi bi-envelope"></i>
                             </span>
                             <input type="email"
-                                   name="email"
                                    id="email"
+                                   name="email"
                                    class="form-control form-control-lg border-start-0 rounded-end @error('email') is-invalid @enderror"
                                    value="{{ old('email') }}"
+                                   placeholder="admin@example.com"
                                    required
-                                   autocomplete="email">
+                                   autocomplete="new-password">
                         </div>
+
                         @error('email')
                             <div class="invalid-feedback mt-1 d-block">
                                 {{ $message }}
@@ -45,33 +50,30 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-medium">Password</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-lock"></i>
-                            </span>
-                            <input type="password"
-                                   name="password"
-                                   id="password"
-                                   class="form-control form-control-lg border-start-0 rounded-end @error('password') is-invalid @enderror"
-                                   required>
-                            <button class="btn btn-outline-secondary rounded-end" type="button" id="togglePassword" data-bs-toggle="tooltip" title="Show Password">
-                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
-                            </button>
-                        </div>
-                        @error('password')
-                            <div class="invalid-feedback mt-1 d-block">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
+                     <label for="password" class="form-label fw-medium">Password</label>
+                     <div class="input-group input-group-lg">
+                         <span class="input-group-text bg-white border-end-0">
+                             <i class="bi bi-lock"></i>
+                         </span>
+                         <input type="password"
+                                name="password"
+                                id="password"
+                                class="form-control form-control-lg border-start-0 rounded-end @error('password') is-invalid @enderror"
+                                placeholder="••••••••"
+                                required
+                                autocomplete="new-password">
+                     </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg py-3 fw-semibold rounded-3">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>
-                            Sign In
-                        </button>
-                    </div>
+                     @error('password')
+                         <div class="invalid-feedback mt-1 d-block">
+                             {{ $message }}
+                         </div>
+                     @enderror
+                 </div>
+
+                 <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold rounded-3">
+                     <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+                 </button>
                 </form>
 
                 <!-- Footer -->
@@ -126,10 +128,8 @@
 }
 </style>
 @endpush
-
 @push('scripts')
 <script>
-// Password toggle
 document.getElementById('togglePassword').addEventListener('click', function () {
     const pwd = document.getElementById('password');
     const icon = document.getElementById('togglePasswordIcon');
@@ -137,5 +137,11 @@ document.getElementById('togglePassword').addEventListener('click', function () 
     icon.classList.toggle('bi-eye');
     icon.classList.toggle('bi-eye-slash');
 });
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll("input[name='email'], input[name='password']").forEach(input => {
+        input.value = '';
+    });
+});
+window.history.replaceState({}, '', '/super-admin/login');
 </script>
 @endpush

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- ✅ Success Message -->
 @if (session('success'))
     <div class="container mb-3">
         <div class="alert alert-success alert-dismissible fade show" role="alert">

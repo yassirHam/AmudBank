@@ -16,7 +16,7 @@ class SuperAdminSeeder extends Seeder
     {
         DB::table('super_admin')->insert([
             'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
+            'email' => 'superadmin@amudbank.com',
             'password' => Hash::make('tdiapromo2024'),
             'created_at' => now(),
             'updated_at' => now(),

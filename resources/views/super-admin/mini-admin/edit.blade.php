@@ -7,20 +7,14 @@
     <form method="POST" action="{{ route('super-admin.mini-admin.update', $miniAdmin) }}">
         @csrf
         @method('PUT')
-
-        <!-- ✅ Password Field -->
         <div class="mb-3">
             <label>Password</label>
             <input type="password" name="password" class="form-control">
         </div>
-
-        <!-- ✅ Password Confirmation -->
         <div class="mb-3">
             <label>Confirm Password</label>
             <input type="password" name="password_confirmation" class="form-control">
         </div>
-
-        <!-- ✅ Permissions -->
         <div class="mb-3">
             <label>Permissions</label>
             <div class="row">

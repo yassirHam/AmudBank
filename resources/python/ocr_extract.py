@@ -38,3 +38,16 @@ except Exception as e:
         "traceback": str(sys.exc_info())
     }))
     sys.exit(1)
+
+
+
+def checkifisnmbr():
+ while True:
+      try:
+         nmbr = input("entre un nmbr :")
+         if isinstance(float(nmbr), float):
+             print("nmbr vlid :")
+             break
+      except ValueError as e:
+        print(e)
+            

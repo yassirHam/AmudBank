@@ -438,3 +438,14 @@ body {
         padding: 3rem;
     }
 }
+.error-cadre {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red text */
+    padding: 15px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}

@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    // Password strength indicator
     const passwordInput = document.getElementById('signup-password');
     if (passwordInput) {
         passwordInput.addEventListener('input', function() {

@@ -17,7 +17,11 @@
                     <i class="bi bi-people me-2"></i> Admin Management
                 </a>
             </li>
-            
+            <li class="nav-item mb-2">
+                <a href="{{ route('super-admin.user.index') }}" class="nav-link btn btn-outline-primary rounded">
+                  <i class="bi bi-person-lines-fill me-2"></i> User Accounts
+                </a>
+            </li>
         </ul>
 
         <div class="logout-section mt-auto">
@@ -29,8 +33,6 @@
             </form>
         </div>
     </nav>
-
-    <!-- Main Content -->
     <main class="main-content">
         <header class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fs-4 fw-bold text-dark mb-0">Admin Control Center</h2>
@@ -38,8 +40,6 @@
                 <span class="badge bg-success-subtle text-success">SuperAdmin</span>
             </div>
         </header>
-
-        <!-- Success Alert -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
                 <i class="bi bi-check-circle me-2"></i> {{ session('success') }}
@@ -48,7 +48,6 @@
         @endif
 
         <div class="row g-4">
-            <!-- Recent Activity -->
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white border-0 pb-0">
@@ -77,7 +76,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Create MiniAdmin Section -->
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm">
@@ -110,13 +108,11 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- Stats Cards -->
                 <div class="row g-3 mt-2">
                     <div class="col-md-6">
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body d-flex align-items-center">
-                                <div class="icon-container bg-primary-subtle text-primary me-3">
+                               <div class="icon-container bg-primary-subtle text-primary me-3">
                                     <i class="bi bi-person-fill-gear fs-4"></i>
                                 </div>
                                 <div>
@@ -129,12 +125,12 @@
                     <div class="col-md-6">
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body d-flex align-items-center">
-                                <div class="icon-container bg-warning-subtle text-warning me-3">
-                                    <i class="bi bi-clock-history fs-4"></i>
+                                <div class="icon-container bg-primary-subtle text-primary me-3">
+                                    <i class="bi bi-person-fill-gear fs-4"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-1">Pending Actions</p>
-                                    <h4 class="mb-0 text-warning">N/A</h4>
+                                    <p class="text-muted mb-1">Total Users</p>
+                                    <h4 class="mb-0 text-primary">{{ \App\Models\User::count() }}</h4>
                                 </div>
                             </div>
                         </div>

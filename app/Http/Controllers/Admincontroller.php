@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ProfileMail;
 use Illuminate\Support\Facades\Session;
 use App\Models\Compte;
-<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Model;
-=======
->>>>>>> cc89429808b39ce16bc0351bda686962c624473e
 
 class AdminController extends Controller
 {
@@ -125,14 +122,10 @@ class AdminController extends Controller
         ]);
     }
     public function createNewBankAccount(Request $request){
-<<<<<<< HEAD
         $user = User::find(Auth::id());
         if (!$user) {
             return back()->withErrors(['user' => 'User not found.']);
         }
-=======
-        $user = Auth::user();
->>>>>>> cc89429808b39ce16bc0351bda686962c624473e
         $compte=Compte::create([
             'user_id' => $user->id,
             'type_compte' => $request->type_compte,
@@ -233,27 +226,36 @@ protected function createCard(Compte $compte)
 
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'Cin' => 'required|string|alpha_num',
-            'password' => 'required|string',
-        ]);
+{
+    // Validate CIN and password
+    $request->validate([
+        'Cin' => 'required|string|alpha_num',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
-            $request->session()->regenerate();
-            
-            return match (Auth::user()->Role) {
-                'client' => redirect()->route('client'),
-                'admin' => redirect()->route('admin'),
-                default => redirect()->route('main'),
-            };
+    // Try to log in
+    if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        // ✅ Check if account is frozen
+        if ($user->status === 'frozen') {
+            Auth::logout();
+            return back()->withErrors([
+                'Cin' => 'Your account is frozen. Contact support.',
+            ])->onlyInput('Cin');
         }
 
-        return back()->withErrors([
-            'Cin' => 'Invalid CIN or password'
-        ])->onlyInput('Cin');
+        // ✅ Redirect all valid users to /client
+        return redirect()->route('client');
     }
 
+    // If login fails
+    return back()->withErrors([
+        'Cin' => 'Invalid CIN or password'
+    ])->onlyInput('Cin');
+}
     public function changeProfile(Request $request){
         $request->validate([
             'telephone' => 'required|alpha_num',
@@ -264,12 +266,9 @@ protected function createCard(Compte $compte)
             'new_password_confirmation' => 'nullable|string|min:8',
         ]);
         $user = Auth::user();
-<<<<<<< HEAD
         if (!$user instanceof User) {
             return back()->withErrors(['user' => 'Authenticated user is not valid.']);
         }
-=======
->>>>>>> cc89429808b39ce16bc0351bda686962c624473e
         if(!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Le mot de passe actuel est incorrect.'
