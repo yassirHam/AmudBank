@@ -26,6 +26,7 @@ class User extends Authenticatable // Extend the Authenticatable class
         'email_verified_at',
         'birthday',
         'adresse',
+        'status', 
     ];
     
     public function comptes()

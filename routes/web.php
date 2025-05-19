@@ -100,6 +100,7 @@ Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')
       // ✅ Dynamic user freeze/unfreeze routes
     Route::post('/user/{user}/freeze', [UserController::class, 'freezeAccount'])->name('user.freeze');
     Route::post('/user/{user}/unfreeze', [UserController::class, 'unfreezeAccount'])->name('user.unfreeze');
+    Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
     // Logout
     Route::post('/logout', function () {
         auth('mini_admins')->logout();

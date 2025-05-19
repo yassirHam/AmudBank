@@ -12,7 +12,7 @@ class SuperAdminSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+        public function run(): void
     {
         DB::table('super_admin')->insert([
             'name' => 'Super Admin',

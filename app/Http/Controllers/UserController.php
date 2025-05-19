@@ -20,7 +20,8 @@ class UserController extends Controller
     {
         $users = User::all();
         $user = auth('mini_admins')->user();
-        return view('mini-admin.user.index', compact('users', 'user'));
+        $miniAdmin = auth('mini_admins')->user();
+        return view('mini-admin.user.index', compact('users', 'miniAdmin'));
     }
 
     // Freeze account (MiniAdmin with permission)
@@ -54,4 +55,23 @@ class UserController extends Controller
         
         return back()->with('success', 'Account unfrozen successfully!');
     }
+    public function destroy(User $user)
+{
+    /** @var \App\Models\MiniAdmin $miniAdmin */
+    $miniAdmin = auth('mini_admins')->user();
+
+    // ✅ Check if MiniAdmin has 'delete_users' in permissions
+    if (!$miniAdmin || !in_array('delete_users', $miniAdmin->permissions ?? [])) {
+        abort(403, 'You do not have permission to delete users');
+    }
+
+    // ✅ Log the action
+    $miniAdmin->logAction('user_deleted', "User {$user->email} deleted by {$miniAdmin->email}");
+
+    // ✅ Delete the user
+    $user->delete();
+
+    // ✅ Redirect with success message
+    return back()->with('success', 'User deleted successfully!');
+}
 }
