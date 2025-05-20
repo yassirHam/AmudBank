@@ -43,4 +43,38 @@ class CreditController extends Controller
 
         return redirect()->back()->with('success', 'Demande de crédit soumise avec succès.');
     }
+    public function index()
+    {
+        $credits = Credit::with('user')->get(); // Load user data
+        $miniAdmin = auth('mini_admins')->user();
+
+        return view('mini-admin.credits.index', compact('credits', 'miniAdmin'));
+    }
+
+    // ✅ Approve or Reject Credit
+    public function updateStatus(Request $request, Credit $credit)
+    {
+        /** @var \App\Models\MiniAdmin $miniAdmin */
+        $miniAdmin = auth('mini_admins')->user();
+
+        // 🔐 Check if MiniAdmin has permission
+        if (!$miniAdmin || !$miniAdmin->hasPermission('manage_credits')) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Validate input
+        $request->validate([
+            'statut' => 'required|in:approuve,rejete'
+        ]);
+        // Update credit status
+        $credit->update(['statut' => $request->statut]);
+
+        // Log the action
+        $miniAdmin->logAction(
+            $request->statut === 'approuve' ? 'credit_approved' : 'credit_rejected',
+            "Credit #{$credit->id} {$request->statut} by MiniAdmin"
+        );
+
+        return back()->with('success', 'Statut du crédit mis à jour avec succès.');
+    }
 }

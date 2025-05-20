@@ -20,6 +20,7 @@ class Credit extends Model
     'Attestation_travail_contrat',
     'Bulletins_salaire',
     'paiement_mensuel',
+    'statut'
 ];
 
     protected $casts = [

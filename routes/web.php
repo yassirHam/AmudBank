@@ -6,6 +6,7 @@ use App\Http\Controllers\MiniAdminLoginController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\MiniAdminController;
 use App\Models\ActivityLog;
+use App\Models\Credit;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OperationController;
@@ -90,8 +91,9 @@ Route::prefix('mini-admin')->name('mini-admin.')->group(function () {
 // MiniAdmin Routes
 Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')->group(function () {
     Route::get('/dashboard', function () {
-        $user = auth('mini_admins')->user();
-        return view('mini-admin.dashboard', compact('user'));
+        $miniAdmin = auth('mini_admins')->user();
+        $credits = Credit::with('user')->latest()->take(5)->get();
+        return view('mini-admin.dashboard', compact('miniAdmin', 'credits'));
     })->name('dashboard');
 
     // ✅ Add this route for user management
@@ -101,6 +103,8 @@ Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')
     Route::post('/user/{user}/freeze', [UserController::class, 'freezeAccount'])->name('user.freeze');
     Route::post('/user/{user}/unfreeze', [UserController::class, 'unfreezeAccount'])->name('user.unfreeze');
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
+    Route::get('/credits', [CreditController::class, 'index'])->name('credit.index');
+    Route::post('/credit/{credit}/update-status', [CreditController::class, 'updateStatus'])->name('credit.update.status');
     // Logout
     Route::post('/logout', function () {
         auth('mini_admins')->logout();

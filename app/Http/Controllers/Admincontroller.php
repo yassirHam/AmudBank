@@ -178,11 +178,6 @@ class AdminController extends Controller
 }
 
     
-
-
-
-
-
     public function verifyCode(Request $request)
     {
         $request->validate([
