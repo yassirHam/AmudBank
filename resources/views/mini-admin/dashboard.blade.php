@@ -31,6 +31,13 @@
                                 </a>
                             </li>
                         @endif
+                        @if ($miniAdmin->hasPermission('manage_delete_requests'))
+                            <li class="nav-item mb-2">
+                                <a href="{{ route('mini-admin.delete-request.index') }}" class="nav-link btn btn-outline-danger rounded">
+                                    <i class="bi bi-person-x me-2"></i> Gérer Suppression Comptes
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item mt-3">
                             <form action="{{ route('mini-admin.logout') }}" method="POST">
                                 @csrf

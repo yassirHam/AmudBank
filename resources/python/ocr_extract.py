@@ -49,5 +49,4 @@ def checkifisnmbr():
              print("nmbr vlid :")
              break
       except ValueError as e:
-        print(e)
-            
+        print(e)                

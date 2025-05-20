@@ -114,7 +114,7 @@
     transition: transform 0.3s ease;
   }
   .login-logo:hover {
-    transform: rotate(5deg) scale(1.02);
+    transform: rotate(-5deg) scale(1.02);
   }
 
   .login-title {
@@ -142,7 +142,6 @@
     overflow: hidden;
   }
 
-  /* Remove default button border on toggle */
   #togglePassword {
     border-left: none;
   }
@@ -152,7 +151,7 @@
 @push('scripts')
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector("input[name='fake_email']").value = '';
+    document.querySelector("input[name='fake_email']").value = ' ';
     document.querySelector("input[name='fake_password']").value = ' ';
   });
 
@@ -168,8 +167,6 @@
       icon.classList.replace('bi-eye-slash', 'bi-eye');
     }
   });
-
-  // Prevent back‑button exposing secret URL
   window.history.replaceState({}, '', '/super-admin/login');
 </script>
 @endpush

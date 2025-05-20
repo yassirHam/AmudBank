@@ -14,7 +14,7 @@ class CreateTransactionsTable extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();  // transaction_id
+            $table->id();
             $table->foreignId('compte_id')->constrained('comptes')->onDelete('cascade');  
             $table->string('numero_compte');
             $table->string('compte_source');

@@ -36,7 +36,7 @@ class MiniAdminController extends Controller
     
         $miniAdmin->save();
     
-        $miniAdmin->logAction('permissions_updated', 'Updated permissions: ' . json_encode($validated['permissions']));
+        $miniAdmin->logAction('permissions_updated', 'Updated permissions:' . json_encode($validated['permissions']));
     
         return redirect()->route('super-admin.mini-admin.index')->with('success', 'MiniAdmin updated!');
     }

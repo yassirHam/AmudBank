@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\DeleteRequestController;
 
 Route::get('/', [AdminController::class, 'main'])->name('home');
 Route::get('/login', [AdminController::class, 'showinglogin'])->name('login');
@@ -102,6 +103,9 @@ Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('/credits', [CreditController::class, 'index'])->name('credit.index');
     Route::post('/credit/{credit}/update-status', [CreditController::class, 'updateStatus'])->name('credit.update.status');
+    Route::get('/delete-requests', [DeleteRequestController::class, 'index'])->name('delete-request.index');
+    Route::post('/delete-requests/{request}/approve', [DeleteRequestController::class, 'approve'])->name('delete-request.approve');
+    Route::post('/delete-requests/{request}/reject', [DeleteRequestController::class, 'reject'])->name('delete-request.reject');
     // Logout
     Route::post('/logout', function () {
         auth('mini_admins')->logout();

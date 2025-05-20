@@ -12,8 +12,8 @@
         
         <ul class="nav flex-column mt-4">
             <li class="nav-item">
-                <a href="{{ route('super-admin.mini-admin.index') }}" class="nav-link active">
-                    <i class="bi bi-people me-2"></i> MiniAdmin Management
+                <a href="{{ route('super-admin.mini-admin.index') }}" class="nav-link btn btn-outline-primary rounded">
+                 <i class="bi bi-people me-2"></i>MiniAdmin Management
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -60,7 +60,8 @@
                                     <div>
                                         <p class="mb-1"><strong>{{ $log->miniAdmin->email }}</strong></p>
                                         <p class="mb-0 small text-muted">
-                                            {{ Str::limit($log->action, 20) }}
+                                            {{ Str::limit($log->action, 1000) }}<br>
+                                            {{ Str::limit($log->description, 1000) }}<br>
                                             <span class="ms-2" title="{{ $log->created_at }}">{{ $log->created_at->diffForHumans() }}</span>
                                         </p>
                                     </div>
@@ -170,6 +171,9 @@
     color: white;
     font-size: 1.1rem;
     font-weight: 600;
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
 }
 
 .sidebar .nav-link {
@@ -182,11 +186,7 @@
 .sidebar .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
-
-.logout-section {
-    margin-top: auto;
-    padding-top: 1rem;
-}
+   
 
 .main-content {
     flex-grow: 1;
