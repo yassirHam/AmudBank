@@ -6,7 +6,6 @@
 @section('content')
 <div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100 py-4">
   <div class="login-container">
-    <!-- Logo & Title -->
     <div class="text-center mb-5">
       <img src="{{ asset('images/LOGO - Copy.png') }}"
            alt="AmudBank Logo"
@@ -16,8 +15,6 @@
       <h2 class="login-title text-success">AmudBank Staff Portal</h2>
       <p class="login-slogan">MiniAdmin Login</p>
     </div>
-
-    <!-- Login Card -->
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
       <div class="card-header bg-gradient-success text-white text-center py-3">
         <h5 class="mb-0">Welcome, MiniAdmin</h5>
@@ -25,7 +22,6 @@
       <div class="card-body p-4">
         <form method="POST" action="{{ route('mini-admin.login.submit') }}" class="needs-validation" novalidate>
           @csrf
-
           <div class="mb-4">
             <label for="email" class="form-label fw-medium">Email Address</label>
             <div class="input-group input-group-lg shadow-sm">

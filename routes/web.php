@@ -44,37 +44,34 @@ Route::post('/client/credit', [CreditController::class, 'submitCreditRequest'])-
 
 // SuperAdmin Public Routes (Login)
 Route::prefix('super-admin')->name('super-admin.')->group(function () {
-    // 🔓 Public login routes
     Route::get('/login/{secret}', [SuperAdminLoginController::class, 'showLoginForm'])
         ->where('secret', '[A-Za-z0-9]{32}')
         ->name('login');
-
     Route::post('/login/{secret}', [SuperAdminLoginController::class, 'login'])
         ->where('secret', '[A-Za-z0-9]{32}')
         ->middleware('throttle:5,1');
 });
 
-// Protected SuperAdmin Routes (Dashboard, User Management, etc.)
+// Protected SuperAdmin Routes
 Route::prefix('super-admin')->name('super-admin.')->middleware('auth:super_admin')->group(function () {
     Route::get('/dashboard', function () {
         $recentActivity = ActivityLog::with('miniAdmin')
             ->latest()
             ->take(10)
             ->get();
-
         return view('super-admin.dashboard', compact('recentActivity'));
     })->name('dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::post('/mini-admin/create', [SuperAdminController::class, 'createMiniAdmin'])->name('mini-admin.create');
 
-    // 🔐 Protected logout
+    // Protected logout
     Route::post('/logout', function () {
         auth('super_admin')->logout();
         return redirect()->route('super-admin.login', ['secret' => env('SUPER_ADMIN_SECRET')]);
     })->name('logout');
 
-    // MiniAdmin Management Routes (protected)
+    // MiniAdmin Management Routes 
     Route::get('/mini-admins', [MiniAdminController::class, 'index'])->name('mini-admin.index');
     Route::get('/mini-admins/{miniAdmin}/edit', [MiniAdminController::class, 'edit'])->name('mini-admin.edit');
     Route::put('/mini-admins/{miniAdmin}', [MiniAdminController::class, 'update'])->name('mini-admin.update');
@@ -96,10 +93,10 @@ Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')
         return view('mini-admin.dashboard', compact('miniAdmin', 'credits'));
     })->name('dashboard');
 
-    // ✅ Add this route for user management
+    // user management
     Route::get('/users', [UserController::class, 'index2'])->name('user.index');
 
-      // ✅ Dynamic user freeze/unfreeze routes
+      //  freeze/unfreeze and crdit routes
     Route::post('/user/{user}/freeze', [UserController::class, 'freezeAccount'])->name('user.freeze');
     Route::post('/user/{user}/unfreeze', [UserController::class, 'unfreezeAccount'])->name('user.unfreeze');
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');

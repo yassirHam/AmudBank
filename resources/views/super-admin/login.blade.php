@@ -151,7 +151,6 @@
 
 @push('scripts')
 <script>
-  // Clear honeypot fields on load
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelector("input[name='fake_email']").value = '';
     document.querySelector("input[name='fake_password']").value = ' ';

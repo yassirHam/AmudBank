@@ -20,11 +20,9 @@ public function login(Request $request)
         'email' => ['required', 'email'],
         'password' => ['required'],
     ]);
-
     if (Auth::guard('mini_admins')->attempt($credentials)) {
         return redirect()->intended('/mini-admin/dashboard');
     }
-
     return back()->withErrors(['email' => 'Invalid credentials']);
 }
 }

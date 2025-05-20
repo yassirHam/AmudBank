@@ -22,15 +22,15 @@
   <div class="card border-0 shadow-sm">
     <div class="card-body">
       <form method="POST" action="{{ route('super-admin.mini-admin.update', $miniAdmin) }}">
-        @csrf @method('PUT')
-
+        @csrf 
+        @method('PUT')
         <div class="row gy-3">
           <div class="col-md-6">
             <label class="form-label fw-medium">New Password</label>
             <input type="password"
                    name="password"
                    class="form-control @error('password') is-invalid @enderror"
-                   placeholder="••••••••">
+                   placeholder="">
             @error('password')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror

@@ -62,7 +62,6 @@
                 </td>
                 <td class="text-end d-flex justify-content-end gap-2">
                   @if($miniAdmin->hasPermission('manage_credits') && $credit->statut==='en_attente')
-                    {{-- Approve --}}
                     <form action="{{ route('mini-admin.credit.update.status', $credit) }}"
                           method="POST" class="d-inline">
                       @csrf
@@ -71,7 +70,6 @@
                         <i class="bi bi-check-circle-fill me-1"></i> Approuver
                       </button>
                     </form>
-                    {{-- Reject --}}
                     <form action="{{ route('mini-admin.credit.update.status', $credit) }}"
                           method="POST" class="d-inline">
                       @csrf

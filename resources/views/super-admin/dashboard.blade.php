@@ -7,14 +7,13 @@
     <!-- Sidebar -->
     <nav class="sidebar" data-bs-spy="affix" data-bs-offset-top="50">
         <div class="sidebar-header">
-            <img src="{{ asset('images/LOGO.png') }}" alt="AmudBank Logo" class="sidebar-logo" width="40">
-            <h5 class="sidebar-title">AmudBank Admin</h5>
+            <h5 class="sidebar-title">AmudBank SuperAdmin</h5>
         </div>
         
         <ul class="nav flex-column mt-4">
             <li class="nav-item">
                 <a href="{{ route('super-admin.mini-admin.index') }}" class="nav-link active">
-                    <i class="bi bi-people me-2"></i> Admin Management
+                    <i class="bi bi-people me-2"></i> MiniAdmin Management
                 </a>
             </li>
             <li class="nav-item mb-2">

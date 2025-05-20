@@ -14,7 +14,6 @@ public function createMiniAdmin(Request $request)
         'email' => ['required', 'email', 'unique:mini_admins'],
         'password' => ['required'],
     ]);
-
     MiniAdmin::create([
         'email' => $validated['email'],
         'password' => bcrypt($validated['password']),

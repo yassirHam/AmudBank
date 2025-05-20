@@ -5,7 +5,6 @@
 @section('content')
 <div class="container-fluid py-4">
 
-  {{-- Page Header --}}
   <div class="d-flex align-items-center justify-content-between mb-4">
     <div class="d-flex align-items-center">
       <a href="{{ route('super-admin.dashboard') }}" class="d-flex align-items-center text-decoration-none me-3">
@@ -21,8 +20,6 @@
       </div>
     </div>  
   </div>
-
-  {{-- Success Alert --}}
   @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
       {{ session('success') }}
@@ -30,7 +27,6 @@
     </div>
   @endif
 
-  {{-- MiniAdmin Table --}}
   <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
       <div class="table-responsive">

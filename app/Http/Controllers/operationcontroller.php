@@ -81,7 +81,6 @@ class OperationController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-
         Delete_request::create([
             'user_id'      => $user->id,
             'motif'        => $request->motif,

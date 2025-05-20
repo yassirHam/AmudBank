@@ -5,7 +5,6 @@
 @section('content')
 <div class="container-fluid py-4">
 
-  {{-- Page Header --}}
   <div class="d-flex align-items-center justify-content-between mb-4">
     <div class="d-flex align-items-center">
       <a href="{{ route('mini-admin.dashboard') }}" class="d-flex align-items-center text-decoration-none me-3">

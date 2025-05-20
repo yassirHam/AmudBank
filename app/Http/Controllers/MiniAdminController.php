@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class MiniAdminController extends Controller
 {
-    // Show all MiniAdmins
     public function index()
     {
         $miniAdmins = MiniAdmin::all();
@@ -16,14 +15,12 @@ class MiniAdminController extends Controller
         return view('super-admin.mini-admin.index', compact('miniAdmins', 'permissions'));
     }
 
-    // Show edit form
     public function edit(MiniAdmin $miniAdmin)
     {
         $permissions = config('permissions.mini_admin');
         return view('super-admin.mini-admin.edit', compact('miniAdmin', 'permissions'));
     }
 
-    // Update permissions and password
     public function update(Request $request, MiniAdmin $miniAdmin)
     {
         $validated = $request->validate([
@@ -44,7 +41,6 @@ class MiniAdminController extends Controller
         return redirect()->route('super-admin.mini-admin.index')->with('success', 'MiniAdmin updated!');
     }
 
-    // Delete MiniAdmin
     public function destroy(MiniAdmin $miniAdmin)
     {
         $miniAdmin->delete();

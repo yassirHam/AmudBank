@@ -198,9 +198,7 @@ class AdminController extends Controller
             ->withInput();       
         }
         $user = User::where('email', $email)->first();
-    
 
-        
         $user->update([
             'email_verified_at' => now(),
         ]);
@@ -220,13 +218,9 @@ class AdminController extends Controller
     {
         // Générer un code (6 chiffres)
         $code = mt_rand(100000, 999999);
-
-        // Sauvegarder le code + expiration (5 min)
         Session::put('verification_code', $code);
         Session::put('verification_code_expires_at', now()->addMinutes(5));
         Session::put('verification_email', $user->email);
-
-        // Envoyer l'email
         Mail::to($user->email)->send(new ProfileMail($user, $code));
         return $code; 
     }
@@ -240,7 +234,6 @@ class AdminController extends Controller
         ]);
 
         if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
-            $request->session()->regenerate();
              $user = Auth::user();
              if ($user->status === 'frozen') {
              Auth::logout();
@@ -248,9 +241,9 @@ class AdminController extends Controller
                 'Cin' => 'Your account is frozen. Contact support.',
             ])->onlyInput('Cin');
         } 
+            $request->session()->regenerate();
             return match (Auth::user()->Role) {
                 'client' => redirect()->route('client'),
-                'admin' => redirect()->route('admin'),
                 default => redirect()->route('main'),
             };
         }
@@ -286,7 +279,6 @@ class AdminController extends Controller
         return redirect()->route('settings')->with('success', 'Profile updated successfully.');
         
     }
-
     public function logout(Request $request)
     {
         Auth::logout();
