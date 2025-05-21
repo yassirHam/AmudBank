@@ -7,17 +7,19 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\MiniAdminController;
 use App\Models\ActivityLog;
 use App\Models\Credit;
+
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CreditController;
-use App\Http\Controllers\DeleteRequestController;
+
 
 Route::get('/', [AdminController::class, 'main'])->name('home');
 Route::get('/login', [AdminController::class, 'showinglogin'])->name('login');
 Route::post('/login', [AdminController::class, 'login'])->name('login.submit');
 
+// Registration routes
 Route::post('/register/Informations_personnelles', [AdminController::class, 'register_step1'])->name('register_step1');
 Route::get('/register/Informations_personnelles', [AdminController::class, 'showregister'])->name('register_step1');
 Route::get('/register/email_verification', [AdminController::class, 'showRegistration'])->name('email_veri');
@@ -26,6 +28,7 @@ Route::Post('/register/email_verification',[AdminController::class, 'verifyCode'
 
 Route::PATCH('/changeProfile',[AdminController::class,'changeProfile'])->name('changeProfile');
 
+// Logout
 Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
 Route::post('/comptes/creer',[AdminController::class,'createNewBankAccount'])->name('createNewBankAccount')->middleware('auth');
@@ -43,7 +46,6 @@ Route::get('client/credit', [operationController::class, 'showcredit'])->name('c
 Route::post('/client/requestdelete', [operationController::class, 'requestdelete'])->name('requestdelete')->middleware('auth');
 Route::post('/client/credit', [CreditController::class, 'submitCreditRequest'])->name('submitCreditRequest')->middleware('auth');
 
-// SuperAdmin Public Routes (Login)
 Route::prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/login/{secret}', [SuperAdminLoginController::class, 'showLoginForm'])
         ->where('secret', '[A-Za-z0-9]{32}')
@@ -103,12 +105,10 @@ Route::prefix('mini-admin')->name('mini-admin.')->middleware('auth:mini_admins')
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('/credits', [CreditController::class, 'index'])->name('credit.index');
     Route::post('/credit/{credit}/update-status', [CreditController::class, 'updateStatus'])->name('credit.update.status');
-    Route::get('/delete-requests', [DeleteRequestController::class, 'index'])->name('delete-request.index');
-    Route::post('/delete-requests/{request}/approve', [DeleteRequestController::class, 'approve'])->name('delete-request.approve');
-    Route::post('/delete-requests/{request}/reject', [DeleteRequestController::class, 'reject'])->name('delete-request.reject');
-    // Logout
     Route::post('/logout', function () {
         auth('mini_admins')->logout();
         return redirect()->route('mini-admin.login');
     })->name('logout');
 });
+Route::post('/test1',[AdminController::class,'test1'])->name('test1');
+Route::get('/test1',[AdminController::class,'test2'])->name('test2');

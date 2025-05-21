@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Credit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\CreditStatutMail;
+use Illuminate\Support\Facades\Mail;
 
 class CreditController extends Controller
 {
@@ -61,6 +63,9 @@ class CreditController extends Controller
             'statut' => 'required|in:approuve,rejete'
         ]);
         $credit->update(['statut' => $request->statut]);
+        $user=$credit->user;
+        Mail::to($user->email)->send(new CreditStatutMail($user, $request->statut)); 
+        
         $miniAdmin->logAction(
             $request->statut === 'approuve' ? 'credit_approved' : 'credit_rejected',
             "Credit #{$credit->id} {$request->statut} "

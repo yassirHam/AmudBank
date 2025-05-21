@@ -18,7 +18,6 @@ public function createMiniAdmin(Request $request)
         'email' => $validated['email'],
         'password' => bcrypt($validated['password']),
     ]);
-
     return redirect()->back()->with('success', 'MiniAdmin created!');
 }
 }

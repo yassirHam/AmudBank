@@ -104,7 +104,7 @@ class AdminController extends Controller
             //     // 'text' => $text,
             //     'errors' => ['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte']
             // ], 422);
-        return redirect()->back()->withErrors(['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte.']);
+         return redirect()->back()->withErrors(['cin_image' => 'Vos informations saisies ne correspondent pas aux informations de votre carte.']);
 
         }
 
@@ -127,57 +127,7 @@ class AdminController extends Controller
             'code' => $generatedCode 
         ]);
     }
-    public function createNewBankAccount(Request $request){
-        $user = Auth::user();
-        $typeCarte = in_array($request->type_compte, ['courant', 'epargne']) ? 'mastercard' : 'visa';
-        if ($request->type_compte == 'courant') {
-            $plafond = 5000.00;
-        } elseif ($request->type_compte == 'epargne') {
-            $plafond = 1000.00;
-        } else {
-            $plafond = 10000.00;
-        }
-        $compte=Compte::create([
-            'user_id' => $user->id,
-            'type_compte' => $request->type_compte,
-            'solde' => 0,
-            'statut' => 'actif',
-            'numero_compte' => rand(1000000, 9999999),
-            'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
-            'type_carte' => $typeCarte,
-            'rip' => Compte::generateRib(),
-            'Code_guichet'=> Compte::CodeGuichet(),
-            'date_expiration' => now()->addYears(5)->format('m/y'),
-            'etat' => 'active',
-            'plafond_journalier' => $plafond,
-            'code_securite' => bcrypt(rand(1000, 9999)),
-            ]);
 
-        session(['compteAddionelle' => $request->type_compte]);
-
-        return redirect()->route('accounts')->with('success', 'Compte bancaire créé avec succès.');
-    }
-    protected function createBankAccount(User $user)
-{   
-    return Compte::create([
-
-        'user_id' => $user->id,
-        'type_compte' => 'courant', 
-        'solde' => 0, 
-        'statut' => 'actif',
-        'numero_compte' => rand(1000000, 9999999),
-        'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
-        'type_carte' => 'mastercard',
-        'rip' => Compte::generateRib(),
-        'Code_guichet'=> Compte::CodeGuichet(),
-        'date_expiration' => now()->addYears(5)->format('m/y'),
-        'etat' => 'active',
-        'plafond_journalier' => 5000.00,
-        'code_securite' => bcrypt(rand(1000, 9999)),
-    ]);
-}
-
-    
     public function verifyCode(Request $request)
     {
         $request->validate([
@@ -198,63 +148,105 @@ class AdminController extends Controller
             ->withInput();       
         }
         $user = User::where('email', $email)->first();
-
+    
         $user->update([
             'email_verified_at' => now(),
         ]);
-        $compte=$this->createBankAccount($user);
-        $code = rand(1000, 9999);
+        $code_securite = (rand(1000, 9999));
+        $compte= Compte::create([
+        'user_id' => $user->id,
+        'type_compte' => 'courant', 
+        'solde' => 0, 
+        'statut' => 'actif',
+        'numero_compte' => rand(1000000, 9999999),
+        'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
+        'type_carte' => 'mastercard',
+        'rip' => Compte::generateRib(),
+        'CVV_CVC'=> rand(100, 999),
+        'date_expiration' => now()->addYears(5)->format('m/y'),
+        'etat' => 'active',
+        'plafond_journalier' => 5000.00,
+        'code_securite' => bcrypt($code_securite),
+    ]); 
         $carte = $compte->numero_carte;
-        Mail::to($user->email)->send(new CodePin($user, $code, $carte));
+        Mail::to($user->email)->send(new CodePin($user, $code_securite, $carte));
 
         Auth::login($user);
 
         return redirect()->route('client')// ->with('success', 'Vérification réussie !') ;
     ;}
-        
+        public function createNewBankAccount(Request $request){
+        $user = Auth::user();
+        $typeCarte = in_array($request->type_compte, ['courant', 'epargne']) ? 'mastercard' : 'visa';
+        if ($request->type_compte == 'courant') {
+            $plafond = 5000.00;
+        } elseif ($request->type_compte == 'epargne') {
+            $plafond = 1000.00;
+        } else {
+            $plafond = 10000.00;
+        }
+        $code_securite = (rand(1000, 9999));
+
+        $compte=Compte::create([
+            'user_id' => $user->id,
+            'type_compte' => $request->type_compte,
+            'solde' => 0,
+            'statut' => 'actif',
+            'numero_compte' => rand(1000000, 9999999),
+            'numero_carte' => implode(' ', str_split(rand(1000000000000000, 9999999999999999), 4)),
+            'type_carte' => $typeCarte,
+            'rip' => Compte::generateRib(),
+            'CVV_CVC'=> rand(100, 999),
+            'date_expiration' => now()->addYears(5)->format('m/y'),
+            'etat' => 'active',
+            'plafond_journalier' => $plafond,
+            'code_securite' => bcrypt($code_securite),
+            ]);
+        $carte = $compte->numero_carte;
+        Mail::to($user->email)->send(new CodePin($user, $code_securite, $carte));
+
+        session(['compteAddionelle' => $request->type_compte]);
+
+        return redirect()->route('accounts')->with('success', 'Compte bancaire créé avec succès.');
+    }
 
 
     public function generateAndSendCode(User $user)
     {
         // Générer un code (6 chiffres)
         $code = mt_rand(100000, 999999);
+
+        // Sauvegarder le code + expiration (5 min)
         Session::put('verification_code', $code);
         Session::put('verification_code_expires_at', now()->addMinutes(5));
         Session::put('verification_email', $user->email);
+
+        // Envoyer l'email
         Mail::to($user->email)->send(new ProfileMail($user, $code));
         return $code; 
     }
 
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'Cin' => 'required|string|alpha_num',
-            'password' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'Cin' => 'required|string|alpha_num',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
-             $user = Auth::user();
-             if ($user->status === 'frozen') {
-             Auth::logout();
-             return back()->withErrors([
-                'Cin' => 'Your account is frozen. Contact support.',
-            ])->onlyInput('Cin');
-        } 
-            $request->session()->regenerate();
-            return match (Auth::user()->Role) {
-                'client' => redirect()->route('client'),
-                default => redirect()->route('main'),
-            };
-        }
+    if (Auth::attempt(['Cin' => $request->Cin, 'password' => $request->password])) {
+        $request->session()->regenerate();
 
-        return back()->withErrors([
-            'Cin' => 'CIN ou mot de passe invalide.'
-        ])->onlyInput('Cin');
+        return redirect()->route('client'); 
     }
 
+    return back()->withErrors([
+        'Cin' => 'CIN ou mot de passe invalide.'
+    ])->onlyInput('Cin');
+}
+
+
     public function changeProfile(Request $request){
-        /** @var \App\Models\User $user */
         $request->validate([
             'telephone' => 'required|alpha_num',
             'adresse' => 'required|string|max:255',
@@ -279,6 +271,9 @@ class AdminController extends Controller
         return redirect()->route('settings')->with('success', 'Profile updated successfully.');
         
     }
+
+
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -286,4 +281,14 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('home');
     }
+
+    public function test1(Request $request){
+        $request->validate([
+            'modpass'=> 'required',
+        ]);
+    }
+    public function test2(Request $request){
+        return view('test1');
+    }
+
 }
